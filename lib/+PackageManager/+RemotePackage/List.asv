@@ -16,37 +16,37 @@ classdef List < handle
         end
         
         function fromFile(L, filePath)
-            file = textread(filePath,'%s','delimiter','\n')
+            file = textread(filePath,'%s','delimiter','\n');
             
-%             % strip comments
-%             for l = 1:size(file,1)
-%                 if  regexp(file{l}, '^#')  
-%                     file(l) = [];
-%                 end
-%             end
-            
-%             file
-            cellfun(@(x) regexp(x, '^#'), file, 'UniformOutput',0)
-            commentedRows = find(cellfun(@(x) regexp(x, '^#')|0, file, 'UniformOutput',0))
+            % Strip commented rows
+            % Yuk.
+            commentedRows = find(...
+                not(...
+                    cellfun(@isempty,...
+                        cellfun(@(x) regexp(x, '^#'), file, 'UniformOutput',0)...
+                    )...
+                )...
+            )
 
-            file(commentedRows) = []
+            file(commentedRows) = [];
             
-            file
-            
+            % Parse individual entries - delimited by empty lines
             delimitingRows = find(cellfun(@(x) isempty(strtrim(x)), file));
             adjacentRows = find(diff(delimitingRows) == 1);
             delimitingRows(adjacentRows+1) = [];
                         
-            if size(delimitingRows) > 0
-                if delimitingRows(1) == 1
-                    delimitingRows(1) = [];
-                end
-
-                if delimitingRows(end) ~= size(file,1)
-                    delimitingRows(end+1,1) = size(file,1)+1;
-                end
+            if isempty(delimitingRows)
+                delimitingRows(1) = size(file,1)+1;
             end
             
+            if delimitingRows(end) ~= size(file,1)
+                delimitingRows(end+1,1) = size(file,1)+1;
+            end
+            
+            if delimitingRows(1) == 1
+                delimitingRows(1) = [];
+            end
+                        
             packageCount = size(delimitingRows,1);
             
             startRowIndex = 1;
