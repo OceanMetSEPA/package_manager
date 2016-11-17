@@ -1,0 +1,32 @@
+# Each source is described by a group of successive line entries
+# Blank lines denote the start and end of source descriptions
+#
+# Comments are denoted by the # symbol
+#
+
+name = matlab_git       # this will be name of the directory that the package is installed
+source = github         # in this case denotes a Github source
+username = manur        # username of the owner of the repository on Github
+repository = MATLAB-git # repository name in Github
+branch = master         # name of branch required (optional). Defaults to 'master'
+tag = 1.0.1             # name of tag required (optional). Defers to SHA or branch if not specified.
+SHA = 349g32h05472gh02  # SHA required (optional). Defers to tag or branch if not specified.
+installation.tag = 1.0. # local name of this version (optional). Defers to tag or timestamp if not specified
+
+name = autodepomod_toolbox
+source = github
+username = OceanMetSEPA
+repository = autodepomod_toolbox
+installation.tag = 1
+installation.path = 'C:\a\different\installation\location' # overrides the default install location
+
+name = utide           # this will be name of the directory that the package is installed
+source = fileExchange  # in this case denotes a MATLAB File Exchange source
+id = 46523             # the FileExchange ID, an integer
+version = 1            # version needs to be the one used in the url, i.e. NOT 1.0 in this case
+
+name = file_finder # this will be name of the directory that the package is installed
+source = network   # in this case denotes a network source, i.e. on a local or remote network path
+path = \\remote_or_local\path\to\file\fileFinder.m # single .m file path
+
+

@@ -17,7 +17,7 @@ classdef List < handle
         
         function fromFile(L, filePath)
             file = textread(filePath,'%s','delimiter','\n');
-            
+
             % Strip commented rows
             % Yuk.
             commentedRows = find(...
@@ -27,14 +27,12 @@ classdef List < handle
                     )...
                 )...
             );
-
+        
             file(commentedRows) = [];
-            
+
             % Parse individual entries - delimited by empty lines
-            delimitingRows = find(cellfun(@(x) isempty(strtrim(x)), file));
-            adjacentRows = find(diff(delimitingRows) == 1);
-            delimitingRows(adjacentRows+1) = [];
-                        
+            delimitingRows = find(cellfun(@(x) isempty(strtrim(x)), file))
+
             if isempty(delimitingRows)
                 delimitingRows(1) = size(file,1)+1;
             end
@@ -46,8 +44,10 @@ classdef List < handle
             if delimitingRows(1) == 1
                 delimitingRows(1) = [];
             end
-                        
-            packageCount = size(delimitingRows,1);
+                                    
+            adjacentRows = find(diff(delimitingRows) == 1)
+            delimitingRows(adjacentRows+1) = []
+            packageCount = size(delimitingRows,1)
             
             startRowIndex = 1;
                         
