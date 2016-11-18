@@ -83,19 +83,18 @@ classdef Base < dynamicprops
                 
                 ip = [rootPath, '\', B.name, '\versions\'];
 
-                if ~isempty(B.installation.tag)
-                    ip = [ip, B.installation.tag];
-                else
+                if isempty(B.installation.tag)
+                    
                     subclassVersionProperty = eval([class(B) '.SubclassVersionProperty']);
                     
                     if ~isempty(subclassVersionProperty) && ~isempty(B.(subclassVersionProperty))
-                        ip = [ip, B.(subclassVersionProperty)];
+                        B.installation.tag = B.(subclassVersionProperty);
                     else
-                        ip = [ip, B.timestamp];
+                        B.installation.tag = B.timestamp;
                     end
                 end
                                 
-                B.installation.path = ip;
+                B.installation.path = [ip, B.installation.tag];
             end
         end
         
@@ -122,12 +121,15 @@ classdef Base < dynamicprops
         end
         
         function install(B, varargin)
-            recurse = 0;
+            recurse       = 0;
+            switchVersion = 1;
             
             for i = 1:2:length(varargin)
               switch varargin{i}
                 case 'recurse'
                   recurse = varargin{i+1};
+                case 'switchVersion'
+                  switchVersion = varargin{i+1}
               end
             end
             
@@ -179,10 +181,12 @@ classdef Base < dynamicprops
             % setting and switching versions
             addpath([PackageManager.Install.rootPath, '\', B.name]);
             
-            % don't add explicit version to path yet
-            % addpath(genpath(B.installPath));
-            
             B.writeInstallInfoToFile(B.installPath);
+            
+            if switchVersion
+                installedPackage = PackageManager.Package(B.name);
+                installedPackage.setVersion(B.installation.tag);
+            end
         end
         
         function s = toString(B)
