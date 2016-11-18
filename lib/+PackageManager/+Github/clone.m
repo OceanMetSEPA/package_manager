@@ -8,7 +8,7 @@ function [ output_args ] = clone(username, repository)
         repository, ...
     };
 
-    developmentPath = [PackageManager.Install.rootPath, '\', repository, '\development'];
+    developmentPath = [PackageManager.Install.rootPath, '\', repository, '\versions\dev'];
     mkdir(developmentPath)
     cd(developmentPath)
     

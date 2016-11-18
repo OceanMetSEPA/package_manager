@@ -31,7 +31,7 @@ classdef List < handle
             file(commentedRows) = [];
 
             % Parse individual entries - delimited by empty lines
-            delimitingRows = find(cellfun(@(x) isempty(strtrim(x)), file))
+            delimitingRows = find(cellfun(@(x) isempty(strtrim(x)), file));
 
             if isempty(delimitingRows)
                 delimitingRows(1) = size(file,1)+1;
@@ -45,9 +45,9 @@ classdef List < handle
                 delimitingRows(1) = [];
             end
                                     
-            adjacentRows = find(diff(delimitingRows) == 1)
-            delimitingRows(adjacentRows+1) = []
-            packageCount = size(delimitingRows,1)
+            adjacentRows = find(diff(delimitingRows) == 1);
+            delimitingRows(adjacentRows+1) = [];
+            packageCount = size(delimitingRows,1);
             
             startRowIndex = 1;
                         

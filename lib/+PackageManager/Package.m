@@ -119,6 +119,11 @@ classdef Package < handle
                 bool = rmdir(packageVersionPath,'s');
             end
         end
+        
+        function setDev(P)
+            P.setVersion('dev');
+        end
+        
     end
     
 end

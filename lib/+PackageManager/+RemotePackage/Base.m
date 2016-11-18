@@ -105,11 +105,11 @@ classdef Base < dynamicprops
         
         function makeInstallDir(B)
             if exist(B.installPath, 'dir')
-                rmpath(genpath(B.installPath))
-                rmdir(B.installPath, 's')
+                rmpath(genpath(B.installPath));
+                rmdir(B.installPath, 's');
             end
             
-            mkdir(B.installPath)
+            mkdir(B.installPath);
         end
         
         function bool = isZipArchive(B)
@@ -145,7 +145,7 @@ classdef Base < dynamicprops
             end
             
             if recurse
-                dependencies = 0
+                dependencies = 0;
                 
                 % check for dependency file in install location
                 dependencyFileName = [B.installPath, '\dependencies'];
@@ -170,7 +170,7 @@ classdef Base < dynamicprops
                 end
                 
                 if dependencies
-                    dependencyList = PackageManager.RemotePackage.List(dependencyFileName)
+                    dependencyList = PackageManager.RemotePackage.List(dependencyFileName);
                     dependencyList.installAll('recurse',1);
                 end
             end
