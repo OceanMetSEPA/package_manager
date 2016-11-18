@@ -1,5 +1,7 @@
 function l = list()
 
+    l = [];
+    
     if exist(PackageManager.Install.rootPath, 'dir')
         contents    = dir(PackageManager.Install.rootPath);
         directories = cell2mat({contents.isdir});
@@ -11,7 +13,7 @@ function l = list()
         
         l = dirNames(~ignoreDirs);
     else
-        error('PackageManager install path - ', PackageManager.Install.rootPath,' - does not exist')
+        warning(['PackageManager install path - ', PackageManager.Install.rootPath,' - does not exist'])
     end
 end
 
