@@ -175,7 +175,13 @@ classdef Base < dynamicprops
                 end
             end
             
-            addpath(genpath(B.installPath));
+            % Add package parent folder to path to ensure discoverable when
+            % setting and switching versions
+            addpath([PackageManager.Install.rootPath, '\', B.name);
+            
+            % don't add explicit version to path yet
+            % addpath(genpath(B.installPath));
+            
             B.writeInstallInfoToFile(B.installPath);
         end
         
