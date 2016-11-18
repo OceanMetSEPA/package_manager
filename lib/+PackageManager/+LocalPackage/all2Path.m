@@ -1,5 +1,5 @@
 function [ output_args ] = all2Path
-    list = PackageManager.LocalPackage.list
+    list = PackageManager.LocalPackage.list;
 
     addpath(PackageManager.Install.rootPath)
 
