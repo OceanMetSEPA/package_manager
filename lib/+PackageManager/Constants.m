@@ -3,7 +3,7 @@ classdef Constants
     %   Detailed explanation goes here
     
     properties (Constant = true)
-        InstallRootEnvVar = 'PACKAGE_MANAGER_INSTALL_ROOT_PATH'
+        InstallRootEnvVar = 'PACKAGE_MANAGER_INSTALL_ROOT_PATH';
     end
     
     methods

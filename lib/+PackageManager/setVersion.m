@@ -1,9 +1,8 @@
 function [ v ] = setVersion(name, version)
-%SETVERSION Summary of this function goes here
-%   Detailed explanation goes here
+    %SETVERSION Summary of this function goes here
+    %   Detailed explanation goes here
 
-    package = PackageManager.Package(name)
-    v       = package.setVersion(version)
+    package = PackageManager.Package(name);
+    package.setVersion(version);
+    v = version;
 end
-
-
