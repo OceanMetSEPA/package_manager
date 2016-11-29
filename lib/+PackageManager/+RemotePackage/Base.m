@@ -4,6 +4,7 @@ classdef Base < dynamicprops
         name = '';
         source = '';
         installation = struct('tag', '', 'path', '');
+        zipCheckSum = '';
     end
     
     methods (Static = true)
@@ -103,12 +104,13 @@ classdef Base < dynamicprops
         end
         
         function makeInstallDir(B)
-            if exist(B.installPath, 'dir')
-                rmpath(genpath(B.installPath));
-                rmdir(B.installPath, 's');
+            if ~exist(B.installPath, 'dir')
+                %rmpath(genpath(B.installPath));
+                %rmdir(B.installPath, 's');
+                mkdir(B.installPath);
             end
             
-            mkdir(B.installPath);
+            %mkdir(B.installPath);
         end
         
         function bool = isZipArchive(B)
@@ -123,13 +125,16 @@ classdef Base < dynamicprops
         function install(B, varargin)
             recurse       = 0;
             switchVersion = 1;
+            checkCheckSum = 1;
             
             for i = 1:2:length(varargin)
               switch varargin{i}
                 case 'recurse'
                   recurse = varargin{i+1};
                 case 'switchVersion'
-                  switchVersion = varargin{i+1}
+                  switchVersion = varargin{i+1};
+                case 'checkCheckSum'
+                  checkCheckSum = varargin{i+1};
               end
             end
             
@@ -137,13 +142,59 @@ classdef Base < dynamicprops
                 B.clearInstallPath;
                 B.installPath(varargin{:});
             end
-            
             B.makeInstallDir;
             B.download;
             
+            % Get the checksum hash for the downloaded zip file.
+            try
+                B.zipCheckSum = DataHash(B.downloadPath, struct('Input', 'file', 'Method', 'MD5', 'Format', 'hex'));
+            catch err
+                if ~isequal(err.identifier, 'MATLAB:UndefinedFunction')
+                    disp(err)
+                    rethrow(err)
+                end
+                B.zipCheckSum = 'NotAvailable';
+            end
+            
+            % If checkCheckSum is set, then see if the newly downloaded
+            % version is the same as any previously downloaded versions of
+            % the package, by checking their zipCheckSum properties.
+            GotIdentical = 0;
+            if checkCheckSum
+                Package = PackageManager.Package(B.name);
+                availableVersions = Package.availableVersions;
+                if numel(availableVersions)
+                    % Make the current version the first to be tested, and then
+                    % more recent ones after that.
+                    [~, Ci] = ismember(Package.currentVersion, availableVersions);
+                    Order = unique([Ci, fliplr(1:numel(availableVersions))], 'stable');
+                    availableVersions = availableVersions(Order);
+                end
+                % Now go through each of the availableVersions and see if
+                % the zipCheckSum is identical.
+                for aVi = 1:numel(availableVersions)
+                    aV = availableVersions{aVi};
+                    vDetails = PackageManager.Utils.readLogFile(B.name, aV);
+                    if ~isequal(vDetails, 0)
+                        if isequal(B.zipCheckSum, vDetails.zipCheckSum)
+                            % An equal checkSum, so an identical zip file
+                            % has previously been downloaded.
+                            GotIdentical = 1;
+                            IdenticalVersion = aV;
+                            break
+                        end
+                    end
+                end
+            end     
+            
             if B.isZipArchive
-                unzip(B.downloadPath, B.installPath);
-                delete(B.downloadPath);  
+                if ~GotIdentical
+                    fprintf('Unzipping files for package ''%s''.\n', B.name)
+                    unzip(B.downloadPath, B.installPath);
+                else
+                    fprintf('An identical copy of requested package ''%s'' has already been installed.\n', B.name)
+                end
+                delete(B.downloadPath);
             end
             
             if recurse
@@ -176,16 +227,28 @@ classdef Base < dynamicprops
                     dependencyList.installAll('recurse',1);
                 end
             end
+            if GotIdentical
+                % Delete the install path, if it's empty.
+                if numel(dir(B.installPath)) <= 2
+                    % It will contain "." and ".." even if it's empty.
+                    rmdir(B.installPath)
+                end
+                
+                if switchVersion
+                    installedPackage = PackageManager.Package(B.name);
+                    installedPackage.setVersion(IdenticalVersion);
+                end
+            else
+                % Add package parent folder to path to ensure discoverable
+                % when setting and switching versions
+                addpath([PackageManager.Install.rootPath, '\', B.name]);
             
-            % Add package parent folder to path to ensure discoverable when
-            % setting and switching versions
-            addpath([PackageManager.Install.rootPath, '\', B.name]);
+                B.writeInstallInfoToFile(B.installPath);
             
-            B.writeInstallInfoToFile(B.installPath);
-            
-            if switchVersion
-                installedPackage = PackageManager.Package(B.name);
-                installedPackage.setVersion(B.installation.tag);
+                if switchVersion
+                    installedPackage = PackageManager.Package(B.name);
+                    installedPackage.setVersion(B.installation.tag);
+                end
             end
         end
         
