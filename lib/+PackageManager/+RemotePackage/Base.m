@@ -47,7 +47,7 @@ classdef Base < dynamicprops
             end
 
             if ischar(keys)
-               topLevelProperty = keys
+               topLevelProperty = keys;
             else
                topLevelProperty = keys{1};
             end
@@ -153,7 +153,7 @@ classdef Base < dynamicprops
                     disp(err)
                     rethrow(err)
                 end
-                B.zipCheckSum = 'NotAvailable';
+                B.zipCheckSum = ['NotAvailable_',timestamp(B)];
             end
             
             % If checkCheckSum is set, then see if the newly downloaded
