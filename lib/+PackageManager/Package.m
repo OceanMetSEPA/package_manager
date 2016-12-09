@@ -3,6 +3,7 @@ classdef Package < handle
     properties
         name = '';
         rootPath = '';
+        versions@PackageManager.Version.List;
     end
     
     methods (Static = true)
@@ -48,6 +49,12 @@ classdef Package < handle
             end            
         end
         
+        function v = get.versions(P)
+             dirs = PackageManager.Utils.listDirectories(P.versionsPath);
+             v = PackageManager.Version.List(dirs);
+             v.package = P;
+        end
+        
         function p = versionsPath(P)
             p = [P.rootPath, '\versions'];
         end
@@ -57,7 +64,7 @@ classdef Package < handle
         end
         
         function versionList = availableVersions(P)
-            versionList = PackageManager.Utils.listDirectories(P.versionsPath);
+            versionList = P.versions.names;
         end
         
         function version = currentVersion(P)

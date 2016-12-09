@@ -105,12 +105,8 @@ classdef Base < dynamicprops
         
         function makeInstallDir(B)
             if ~exist(B.installPath, 'dir')
-                %rmpath(genpath(B.installPath));
-                %rmdir(B.installPath, 's');
                 mkdir(B.installPath);
             end
-            
-            %mkdir(B.installPath);
         end
         
         function bool = isZipArchive(B)

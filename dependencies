@@ -1,0 +1,11 @@
+name = data_hash
+source = fileExchange
+id = 31272 
+version = 9
+installation.tag = 1.5
+
+name = matlab_git
+source = github
+username = manur
+repository = MATLAB-git
+branch = master

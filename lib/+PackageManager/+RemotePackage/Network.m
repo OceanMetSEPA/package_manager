@@ -14,7 +14,7 @@ classdef Network < PackageManager.RemotePackage.Base
     methods
         
         function dp = downloadPath(N)
-            dp = N.path;
+            dp = [N.installPath, '.zip'];
         end
         
         function download(N)
@@ -22,20 +22,16 @@ classdef Network < PackageManager.RemotePackage.Base
                 N.makeInstallDir;
             end
             
-            if exist(N.path, 'file')
-                [~, fileName, ext] = fileparts(N.path);
-                copyfile(N.path, [N.installPath, '\', fileName, ext], 'f');
+            [~, ~, ext] = fileparts(N.path);
+            isZip = isequal(ext, '.zip');
+            
+            if isZip
+                copyfile(N.path, N.downloadPath);
             else
-                copyfile(N.path, N.installPath, 'f');
-            end            
+                zip(N.downloadPath, N.path);                
+            end        
         end
         
-
-%                    
-% 
-% 
-% 
-%                     
     end
     
 end
