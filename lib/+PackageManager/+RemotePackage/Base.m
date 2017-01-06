@@ -172,7 +172,7 @@ classdef Base < dynamicprops
                     aV = availableVersions{aVi};
                     vDetails = PackageManager.Utils.readLogFile(B.name, aV);
                     if ~isequal(vDetails, 0)
-                        if isequal(B.zipCheckSum, vDetails.zipCheckSum)
+                        if isfield(vDetails, 'zipCheckSum') & isequal(B.zipCheckSum, vDetails.zipCheckSum)
                             % An equal checkSum, so an identical zip file
                             % has previously been downloaded.
                             GotIdentical = 1;
