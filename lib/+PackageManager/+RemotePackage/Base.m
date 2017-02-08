@@ -18,6 +18,8 @@ classdef Base < dynamicprops
                     subklassName = 'FileExchange';
                 case 'network'
                     subklassName = 'Network';
+                case 'web'
+                    subklassName = 'Web';
             end
              
             subklass = PackageManager.RemotePackage.(subklassName);
