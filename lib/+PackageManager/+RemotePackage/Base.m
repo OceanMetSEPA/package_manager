@@ -10,7 +10,6 @@ classdef Base < dynamicprops
     methods (Static = true)
         
         function subklass = toSubclass(base)
-            
             switch base.source
                 case 'github'
                     subklassName = 'Github';
@@ -207,24 +206,31 @@ classdef Base < dynamicprops
                     % if it is a github install then there will always be
                     % an additional directory layer, look in there
                     installContents = dir(B.installPath);
+                    dirIndexes = cell2mat({installContents.isdir});
+                    dirNames   = {installContents(dirIndexes).name};
                     
-                    % only if there is a single directory only (no other
-                    % dirs or files)
-                    % the 3rd entry omits the '.'  and '..' entries
-                    if length(installContents) == 3 && installContents(3).isdir
-                        dependencyFileName = [B.installPath, '\', installContents(3).name, '\dependencies'];
+                    for n = 1:length(dirNames)
+                        name = dirNames{n};
+                        
+                        if isequal(name, '.') | isequal(name, '..')
+                            continue
+                        end
+                        
+                        dependencyFileName = [B.installPath, '\', name, '\dependencies'];
                         
                         if exist(dependencyFileName, 'file')
                             dependencies = 1;
+                            break
                         end
                     end
                 end
                 
                 if dependencies
-                    dependencyList = PackageManager.RemotePackage.List(dependencyFileName);
+                    dependencyList = PackageManager.RemotePackage.List(dependencyFileName)
                     dependencyList.installAll('recurse',1);
                 end
             end
+            
             if GotIdentical
                 % Delete the install path, if it's empty.
                 if numel(dir(B.installPath)) <= 2

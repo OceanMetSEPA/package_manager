@@ -37,7 +37,7 @@ classdef List < handle
                 delimitingRows(1) = size(file,1)+1;
             end
             
-            if delimitingRows(end) ~= size(file,1)
+            if delimitingRows(end) ~= size(file,1)+1
                 delimitingRows(end+1,1) = size(file,1)+1;
             end
             
