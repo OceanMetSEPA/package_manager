@@ -70,6 +70,10 @@ classdef Github < PackageManager.RemotePackage.Base
             
             urlwrite(B.sourceURL, B.downloadPath);
         end
+        
+        function pull(B)
+            PackageManager.Github.pull(B.username, B.repository);            
+        end
     end
     
 end
