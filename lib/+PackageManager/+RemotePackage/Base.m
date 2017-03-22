@@ -160,13 +160,22 @@ classdef Base < dynamicprops
             if checkCheckSum
                 Package = PackageManager.Package(B.name);
                 availableVersions = Package.availableVersions;
+
                 if numel(availableVersions)
                     % Make the current version the first to be tested, and then
                     % more recent ones after that.
-                    [~, Ci] = ismember(Package.currentVersion, availableVersions);
-                    Order = unique([Ci, fliplr(1:numel(availableVersions))], 'stable');
-                    availableVersions = availableVersions(Order);
+                    try
+                        % wrap in a try-catch: .currentVersion() can throw an error
+                        % if folk have been manually faffing about with their path. 
+                        % Let's not let that be a showstopper for installing
+                        [~, Ci] = ismember(Package.currentVersion, availableVersions);
+                        Order = unique([Ci, fliplr(1:numel(availableVersions))], 'stable');
+                        availableVersions = availableVersions(Order);
+                    catch
+                       % nevermind 
+                    end
                 end
+                
                 % Now go through each of the availableVersions and see if
                 % the zipCheckSum is identical.
                 for aVi = 1:numel(availableVersions)
