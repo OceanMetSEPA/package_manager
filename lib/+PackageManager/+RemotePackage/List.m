@@ -83,7 +83,13 @@ classdef List < handle
         
         function installAll(DL, varargin)
             for d = 1:DL.size
-                DL.packages{d}.install(varargin{:});
+                try
+                    DL.packages{d}.install(varargin{:});
+                catch Err
+                    disp(['The installation of ', DL.packages{d}.name, ' failed with the following message...'])
+                    warning(Err.message)
+                    continue
+                end
             end
         end
                     
