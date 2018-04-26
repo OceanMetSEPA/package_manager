@@ -1,7 +1,7 @@
 classdef Github < PackageManager.RemotePackage.Base
         
     properties (Constant = true)
-        RootURL = 'https://github.com';
+        RootURL = 'https://codeload.github.com';
         DefaultArchiveName = 'master';
         SubclassVersionProperty = 'tag';
     end
@@ -36,7 +36,6 @@ classdef Github < PackageManager.RemotePackage.Base
                 an = G.SHA;
             end
 
-            an = [an, '.zip'];
         end
         
         function r = get.repository(G)
@@ -48,11 +47,16 @@ classdef Github < PackageManager.RemotePackage.Base
         end
         
         function s = sourceURL(G)
+            % Example...
+            %
+            %  https://codeload.github.com/ACCOUNT/REPO/zip/master
+            %
+            
             urlParts = { ...
                 PackageManager.RemotePackage.Github.RootURL, ...
                 G.username, ...
                 G.repository, ...
-                'archive', ...
+                'zip', ...
                 G.archiveName ...
             };
         
@@ -68,7 +72,7 @@ classdef Github < PackageManager.RemotePackage.Base
                 B.makeInstallDir;
             end
             
-            urlwrite(B.sourceURL, B.downloadPath);
+            urlwrite(B.sourceURL, B.downloadPath)
         end
         
         function pull(B)
