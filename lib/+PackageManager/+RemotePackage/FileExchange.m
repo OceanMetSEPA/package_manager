@@ -1,7 +1,7 @@
 classdef FileExchange < PackageManager.RemotePackage.Base
         
     properties (Constant = true)
-        RootURL = 'http://www.mathworks.com/matlabcentral/mlc-downloads/downloads/submissions';
+        RootURL = 'https://uk.mathworks.com/matlabcentral/mlc-downloads/downloads/submissions';
         SubclassVersionProperty = 'version';
     end
     
@@ -33,7 +33,7 @@ classdef FileExchange < PackageManager.RemotePackage.Base
             if ~exist(B.installPath, 'dir')
                 B.makeInstallDir;
             end
-            
+            B.sourceURL
             urlwrite(B.sourceURL, B.downloadPath);
         end
         
