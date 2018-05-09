@@ -13,6 +13,10 @@ classdef FileExchange < PackageManager.RemotePackage.Base
     methods
         
         function s = sourceURL(FE)
+            % Example
+            %
+            %   https://uk.mathworks.com/matlabcentral/mlc-downloads/downloads/submissions/31272/versions/10/download/zip
+            %
 
             urlParts = { ...
                 PackageManager.RemotePackage.FileExchange.RootURL, ...
